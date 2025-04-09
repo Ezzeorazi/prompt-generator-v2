@@ -7,6 +7,11 @@ export default function Home() {
       <Typography variant="h3" gutterBottom>Bienvenido/a al Generador de Prompts 🤖</Typography>
 
       <Typography variant="body1" sx={{ mb: 3 }}>
+      Los prompts son las instrucciones o preguntas que le das a un modelo de inteligencia artificial(IA) 
+      para obtener una respuesta especìfica. Piensa en ellos como la llave que desbloque el potencial creativo y funcional de IA.
+      </Typography>
+
+      <Typography variant="body1" sx={{ mb: 3 }}>
         Esta app te ayuda a crear prompts personalizados para generar <strong>imágenes</strong>, <strong>textos</strong> o <strong>código</strong>.
         Solo tenés que seleccionar el tipo de contenido, escribir un tema y elegir un estilo. Nosotros te damos el prompt perfecto listo para usar.
       </Typography>
