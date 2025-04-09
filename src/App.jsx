@@ -9,6 +9,7 @@ import { Box, useMediaQuery, useTheme } from '@mui/material';
 import TerminosCondiciones from './pages/TerminosCondiciones';
 import QueSonLasAI from './pages/QueSonLasAI'; // Importa el nuevo componente
 import Video from './pages/Video';
+import Diseno3D from './pages/Diseno3D';
 
 export default function App() {
   const theme = useTheme();
@@ -34,6 +35,7 @@ export default function App() {
           <Route path="/terminos-y-condiciones" element={<TerminosCondiciones />} />
           <Route path="/que-son-las-ai" element={<QueSonLasAI />} /> 
           <Route path="/video" element={<Video />} /> 
+          <Route path="/diseno-3d" element={<Diseno3D />} /> 
 
         </Routes>
       </Box>
