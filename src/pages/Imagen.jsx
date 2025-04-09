@@ -47,7 +47,7 @@ export default function Imagen() {
 
   return (
     <Container maxWidth="sm" sx={{ py: 4 }}>
-      <Typography variant="h4" gutterBottom>🎨 Prompt de Imagen Avanzado</Typography>
+      <Typography variant="h4" gutterBottom>🎨 Prompt de Imagen</Typography>
 
       <Typography variant="body2" color="textSecondary" mb={1}>
         Ingresa un tema y personaliza la imagen con las siguientes opciones:

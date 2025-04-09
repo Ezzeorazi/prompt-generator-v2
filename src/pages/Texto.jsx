@@ -38,7 +38,7 @@ export default function Texto() {
 
   return (
     <Container maxWidth="sm" sx={{ py: 4 }}>
-      <Typography variant="h4" gutterBottom>📝 Prompt de Texto Avanzado</Typography>
+      <Typography variant="h4" gutterBottom>📝 Prompt de Texto</Typography>
 
       <Typography variant="body2" color="textSecondary" mb={2}>
         Ingresa un tema y selecciona un estilo para generar un prompt de texto avanzado.

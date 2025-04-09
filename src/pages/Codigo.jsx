@@ -42,7 +42,7 @@ export default function Codigo() {
 
   return (
     <Container maxWidth="sm" sx={{ py: 4 }}>
-      <Typography variant="h4" gutterBottom>💻 Prompt de Código Avanzado</Typography>
+      <Typography variant="h4" gutterBottom>💻 Prompt de Código</Typography>
 
       <Typography variant="body2" color="textSecondary" mb={2}>
         Describe el problema o la idea de código que necesitas.

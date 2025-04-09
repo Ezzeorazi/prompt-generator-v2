@@ -45,7 +45,7 @@ export default function Video() {
 
   return (
     <Container maxWidth="sm" sx={{ py: 4 }}>
-      <Typography variant="h4" gutterBottom>🎬 Prompt de Video Avanzado</Typography>
+      <Typography variant="h4" gutterBottom>🎬 Prompt de Video</Typography>
 
       <Typography variant="body2" color="textSecondary" mb={2}>
         Describe el tema o la idea del video que necesitas.
