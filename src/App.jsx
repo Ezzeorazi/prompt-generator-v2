@@ -6,32 +6,39 @@ import Codigo from './pages/Codigo';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import { Box, useMediaQuery, useTheme } from '@mui/material';
+import TerminosCondiciones from './pages/TerminosCondiciones';
+import QueSonLasAI from './pages/QueSonLasAI'; // Importa el nuevo componente
+import Video from './pages/Video';
 
 export default function App() {
-    const theme = useTheme();
-    const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
-    return (
-        <Box
-            sx={{
-                display: 'flex',
-                flexDirection: 'column',
-                minHeight: '100vh',
-            }}
-        >
-            <Navbar />
+  return (
+    <Box
+      sx={{
+        display: 'flex',
+        flexDirection: 'column',
+        minHeight: '100vh',
+      }}
+    >
+      <Navbar />
 
-            {/* Contenedor del contenido principal con padding superior en móvil */}
-            <Box sx={{ flex: 1, paddingTop: isMobile ? '64px' : '0' }}>
-                <Routes>
-                    <Route path="/" element={<Home />} />
-                    <Route path="/imagen" element={<Imagen />} />
-                    <Route path="/texto" element={<Texto />} />
-                    <Route path="/codigo" element={<Codigo />} />
-                </Routes>
-            </Box>
+      {/* Contenedor del contenido principal con padding superior en móvil */}
+      <Box sx={{ flex: 1, paddingTop: isMobile ? '64px' : '0' }}>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/imagen" element={<Imagen />} />
+          <Route path="/texto" element={<Texto />} />
+          <Route path="/codigo" element={<Codigo />} />
+          <Route path="/terminos-y-condiciones" element={<TerminosCondiciones />} />
+          <Route path="/que-son-las-ai" element={<QueSonLasAI />} /> 
+          <Route path="/video" element={<Video />} /> 
 
-            <Footer />
-        </Box>
-    );
+        </Routes>
+      </Box>
+
+      <Footer />
+    </Box>
+  );
 }
