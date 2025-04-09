@@ -2,7 +2,7 @@ import { useState } from 'react';
 import {
   Container, Typography, Box, TextField,
   Select, MenuItem, Button, FormControl,
-  Snackbar, Alert, Paper, InputLabel
+  Snackbar, Alert, Paper, InputLabel, FormHelperText
 } from '@mui/material';
 
 const lenguajes = ['JavaScript', 'Python', 'HTML', 'CSS', 'SQL', 'Java', 'C++', 'React', 'TypeScript', 'PHP', 'C#', 'Ruby', 'Go', 'Swift', 'Kotlin'];
@@ -18,8 +18,14 @@ export default function Codigo() {
   const [proposito, setProposito] = useState('');
   const [prompt, setPrompt] = useState('');
   const [copiado, setCopiado] = useState(false);
+  const [problemaError, setProblemaError] = useState(false);
 
   const generarPrompt = () => {
+    if (!problema.trim()) {
+      setProblemaError(true);
+      return;
+    }
+    setProblemaError(false);
     let p = `Mostrame un ejemplo de código`;
     if (formato) p += ` como ${formato}`;
     if (nivel) p += ` para un programador ${nivel}`;
@@ -49,7 +55,13 @@ export default function Codigo() {
         label="Problema o Idea de Código"
         margin="normal"
         value={problema}
-        onChange={(e) => setProblema(e.target.value)}
+        onChange={(e) => {
+          setProblema(e.target.value);
+          setProblemaError(false);
+        }}
+        required
+        error={problemaError}
+        helperText={problemaError && 'Por favor, describe el problema o la idea de código.'}
       />
 
       <Box mt={2}>
@@ -119,7 +131,6 @@ export default function Codigo() {
               {prompt}
             </Typography>
           </Paper>
-          
           <Button variant="outlined" onClick={copiar}>📋 Copiar</Button>
           <Typography variant="body2" color="textSecondary" sx={{ fontStyle: 'italic', mt: 2 }}>
             Copia el prompt de arriba y pégalo en tu IA de generación de código preferida (por ejemplo, ChatGPT, Copilot, etc.).

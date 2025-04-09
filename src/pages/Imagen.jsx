@@ -2,7 +2,7 @@ import { useState } from 'react';
 import {
   Container, Typography, Box, TextField,
   Select, MenuItem, Button, FormControl,
-  Snackbar, Alert, Paper
+  Snackbar, Alert, Paper, FormHelperText
 } from '@mui/material';
 
 const estilosImagen = [
@@ -23,8 +23,14 @@ export default function Imagen() {
   const [iluminacion, setIluminacion] = useState('');
   const [prompt, setPrompt] = useState('');
   const [copiado, setCopiado] = useState(false);
+  const [temaError, setTemaError] = useState(false);
 
   const generarPrompt = () => {
+    if (!tema.trim()) {
+      setTemaError(true);
+      return;
+    }
+    setTemaError(false); // Limpia el error si hay texto
     let p = `Generá una imagen`;
     if (estilo) p += ` en estilo ${estilo}`;
     if (aspecto) p += ` con relación de aspecto ${aspecto}`;
@@ -69,7 +75,13 @@ export default function Imagen() {
         label="Tema principal"
         margin="normal"
         value={tema}
-        onChange={(e) => setTema(e.target.value)}
+        onChange={(e) => {
+          setTema(e.target.value);
+          setTemaError(false); // Limpia el error al escribir
+        }}
+        required
+        error={temaError}
+        helperText={temaError && 'Por favor, ingresa un tema principal.'}
       />
 
       {/* ... (Los componentes Box y FormControl para los Select) ... */}

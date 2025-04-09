@@ -2,7 +2,7 @@ import { useState } from 'react';
 import {
   Container, Typography, Box, TextField,
   Select, MenuItem, Button, FormControl,
-  Snackbar, Alert, Paper
+  Snackbar, Alert, Paper, FormHelperText
 } from '@mui/material';
 
 const estilosTexto = [
@@ -16,8 +16,14 @@ export default function Texto() {
   const [prompt, setPrompt] = useState('');
   const [copiado, setCopiado] = useState(false);
   const [maxCaracteres, setMaxCaracteres] = useState('');
+  const [temaError, setTemaError] = useState(false);
 
   const generarPrompt = () => {
+    if (!tema.trim()) {
+      setTemaError(true);
+      return;
+    }
+    setTemaError(false);
     let p = `Escribí un texto ${estilo || 'neutro'} sobre: "${tema}"`;
     if (maxCaracteres) {
       p += ` con un máximo de ${maxCaracteres} caracteres.`;
@@ -45,7 +51,13 @@ export default function Texto() {
         label="Tema principal del texto"
         margin="normal"
         value={tema}
-        onChange={(e) => setTema(e.target.value)}
+        onChange={(e) => {
+          setTema(e.target.value);
+          setTemaError(false);
+        }}
+        required
+        error={temaError}
+        helperText={temaError && 'Por favor, ingresa un tema principal.'}
       />
 
       <Box mt={2}>
