@@ -154,7 +154,7 @@ export default function Imagen() {
           </Paper>
           <Button variant="outlined" onClick={copiar}>📋 Copiar</Button>
           <Typography variant="body2" color="textSecondary" sx={{ fontStyle: 'italic', mt: 2 }}>
-            Copia el prompt de arriba y pégalo en tu IA de generación de imágenes preferida (por ejemplo, DALL-E, Midjourney, Stable Diffusion, etc.).
+            Copia el prompt de arriba y pégalo en tu IA de generación de imágenes preferida (por ejemplo, Gemini, DALL-E, Midjourney, Stable Diffusion, Chat GPT etc.).
           </Typography>
         </Box>
       )}
