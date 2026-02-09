@@ -10,6 +10,7 @@ import TerminosCondiciones from './pages/TerminosCondiciones';
 import QueSonLasAI from './pages/QueSonLasAI'; // Importa el nuevo componente
 import Video from './pages/Video';
 import Diseno3D from './pages/Diseno3D';
+import MarketingDigital from './pages/MarketingDigital';
 
 export default function App() {
   const theme = useTheme();
@@ -32,6 +33,7 @@ export default function App() {
           <Route path="/imagen" element={<Imagen />} />
           <Route path="/texto" element={<Texto />} />
           <Route path="/codigo" element={<Codigo />} />
+          <Route path="/marketing-digital" element={<MarketingDigital />} />
           <Route path="/terminos-y-condiciones" element={<TerminosCondiciones />} />
           <Route path="/que-son-las-ai" element={<QueSonLasAI />} /> 
           <Route path="/video" element={<Video />} /> 

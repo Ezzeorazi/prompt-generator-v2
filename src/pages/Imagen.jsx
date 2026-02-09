@@ -8,7 +8,7 @@ import {
 const estilosImagen = [
   'realista', 'grunge', 'sketch', 'pixel art', '3D', 'caricatura', 'estilo ghibli',
   'acuarela', 'cómic', 'anime', 'surrealista', 'cyberpunk', 'steampunk',
-  'pop art', 'doodle', 'low poly', 'noir', 'arte abstracto', 'fantasía épica',
+  'pop art', 'doodle', 'low poly', 'noir', 'arte abstracto', 'fantasía épica', "Simpsons",
 ];
 
 const relacionesAspecto = ['1:1', '16:9', '9:16', '4:3'];
