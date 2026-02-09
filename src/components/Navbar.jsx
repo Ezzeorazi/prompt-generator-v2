@@ -10,6 +10,7 @@ import CodeIcon from '@mui/icons-material/Code';
 import InfoIcon from '@mui/icons-material/Info';
 import VideocamIcon from '@mui/icons-material/Videocam';
 import BlenderIcon from '@mui/icons-material/Blender'; // Necesitarás instalar este icono: npm install @mui/icons-material
+import CampaignIcon from '@mui/icons-material/Campaign';
 import { Link } from 'react-router-dom';
 
 const sections = [
@@ -17,6 +18,7 @@ const sections = [
     { label: 'Texto', path: '/texto', icon: <TextFieldsIcon sx={{ mr: 1 }} /> },
     { label: 'Código', path: '/codigo', icon: <CodeIcon sx={{ mr: 1 }} /> },
     { label: 'Video', path: '/video', icon: <VideocamIcon sx={{ mr: 1 }} /> },
+    { label: 'Marketing Digital', path: '/marketing-digital', icon: <CampaignIcon sx={{ mr: 1 }} /> },
     { label: 'Diseño 3D', path: '/diseno-3d', icon: <BlenderIcon sx={{ mr: 1 }} /> }, // Nueva sección
     { label: '¿Qué son las IA?', path: '/que-son-las-ai', icon: <InfoIcon sx={{ mr: 1 }} /> },
     // Podés agregar más rutas acá

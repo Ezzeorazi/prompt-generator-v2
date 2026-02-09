@@ -1,96 +1,114 @@
 import { useState } from 'react';
 import {
-  Container, Typography, Box, TextField,
-  Select, MenuItem, Button, FormControl,
-  Snackbar, Alert, Paper, InputLabel, FormHelperText
+  Container,
+  Typography,
+  Box,
+  TextField,
+  Select,
+  MenuItem,
+  Button,
+  FormControl,
+  Snackbar,
+  Alert,
+  Paper,
+  InputLabel,
+  FormHelperText
 } from '@mui/material';
 
-const tiposMarketing = ['brief-de-marca', 'buyer-persona', 'calendario-contenido', 'contenido-campana'];
-const plataformas = ['Instagram', 'LinkedIn', 'TikTok', 'Facebook', 'Twitter/X', 'YouTube', 'Pinterest', 'Multi-plataforma'];
-const objetosCampana = ['conciencia de marca', 'generación de leads', 'ventas', 'engagement', 'fidelización', 'lanzamiento de producto'];
-const herramientasIA = ['ChatGPT', 'Google Gemini', 'Claude', 'Cualquiera'];
-
 export default function MarketingDigital() {
-  const [tipoMarketing, setTipoMarketing] = useState('');
-  const [nombreMarca, setNombreMarca] = useState('');
-  const [descripcionMarca, setDescripcionMarca] = useState('');
+  const [tipo, setTipo] = useState('');
+  const [marca, setMarca] = useState('');
+  const [descripcion, setDescripcion] = useState('');
   const [industria, setIndustria] = useState('');
   const [usarSmart, setUsarSmart] = useState('no');
-  const [compradores, setCompradoresPersona] = useState('');
-  const [painPoints, setPainPoints] = useState('');
-  const [plataformaSeleccionada, setPlataformaSeleccionada] = useState('');
-  const [duracionCalendario, setDuracionCalendario] = useState('mes');
-  const [frecuenciaPublicacion, setFrecuenciaPublicacion] = useState('');
-  const [objetoCampana, setObjetoCampana] = useState('');
+
+  const [audiencia, setAudiencia] = useState('');
+  const [dolores, setDolores] = useState('');
+
+  const [duracion, setDuracion] = useState('mes');
+  const [plataforma, setPlataforma] = useState('');
+  const [frecuencia, setFrecuencia] = useState('');
+
+  const [objetivoCampana, setObjetivoCampana] = useState('');
   const [presupuesto, setPresupuesto] = useState('');
-  const [herramientaIA, setHerramientaIA] = useState('');
+
   const [prompt, setPrompt] = useState('');
   const [copiado, setCopiado] = useState(false);
   const [error, setError] = useState(false);
-  const [mensajeError, setMensajeError] = useState('');
 
   const generarPrompt = () => {
-    setError(false);
-    setMensajeError('');
-
-    // Validación básica
-    if (!tipoMarketing.trim()) {
+    if (!tipo || !marca.trim()) {
       setError(true);
-      setMensajeError('Por favor, selecciona un tipo de contenido de marketing.');
       return;
     }
 
-    if (!nombreMarca.trim()) {
-      setError(true);
-      setMensajeError('Por favor, ingresa el nombre de la marca.');
-      return;
-    }
+    let p = `Actuá como un especialista senior en marketing digital.\n\n`;
+    p += `Contexto:\n`;
+    p += `Marca: ${marca}\n`;
+    if (descripcion) p += `Descripción: ${descripcion}\n`;
+    if (industria) p += `Industria: ${industria}\n`;
 
-    let p = '';
-
-    // Generar prompts según el tipo seleccionado
-    if (tipoMarketing === 'brief-de-marca') {
-      p = `Crea un brief de marca completo para "${nombreMarca}"`;
-      if (descripcionMarca) p += ` que es una empresa de ${descripcionMarca}`;
-      if (industria) p += ` en la industria de ${industria}`;
+    if (tipo === 'brief') {
+      p += `\nObjetivo:\nCrear un brief de marca profesional.\n\n`;
+      p += `Entregable esperado:\n`;
+      p += `- Propósito de marca\n`;
+      p += `- Misión y visión\n`;
+      p += `- Propuesta de valor\n`;
+      p += `- Público objetivo\n`;
+      p += `- Personalidad y tono de comunicación\n`;
+      p += `- Posicionamiento\n`;
+      p += `- Recomendaciones estratégicas\n`;
       if (usarSmart === 'si') {
-        p += `. El brief debe incluir objetivos SMART (Específicos, Medibles, Alcanzables, Relevantes y Temporizados)`;
+        p += `- Objetivos definidos con metodología SMART\n`;
       }
-      p += `. Incluye: misión, visión, valores, posicionamiento, público objetivo, propuesta de valor, línea gráfica general, tono de voz y recomendaciones de estrategia`;
-    } 
-    
-    else if (tipoMarketing === 'buyer-persona') {
-      p = `Crea 2-3 buyer personas detallados para "${nombreMarca}"`;
-      if (descripcionMarca) p += ` que ofrece ${descripcionMarca}`;
-      if (industria) p += ` en la industria de ${industria}`;
-      if (compradores) p += ` enfocado en ${compradores}`;
-      p += `. Para cada persona incluye: nombre, edad, cargo, objetivos principales`;
-      if (painPoints) p += `, desafíos clave como ${painPoints}`;
-      p += `, comportamiento de compra, canales preferidos, nivel de presupuesto y cómo tu marca puede resolver sus necesidades`;
-    } 
-    
-    else if (tipoMarketing === 'calendario-contenido') {
-      p = `Crea un calendario de contenido de marketing para "${nombreMarca}"`;
-      if (descripcionMarca) p += ` que ofrece ${descripcionMarca}`;
-      if (duracionCalendario) p += ` para un ${duracionCalendario === 'mes' ? 'mes' : duracionCalendario === 'trimestre' ? 'trimestre' : 'año'}`;
-      if (plataformaSeleccionada) p += ` en ${plataformaSeleccionada}`;
-      if (frecuenciaPublicacion) p += ` con una frecuencia de ${frecuenciaPublicacion} publicaciones`;
-      p += `. Incluye: temas por semana, tipos de contenido (educativo, promocional, entretenimiento), días y horarios recomendados para publicar, hashtags, CTA (call to action) y métricas a monitorear`;
-    } 
-    
-    else if (tipoMarketing === 'contenido-campana') {
-      p = `Crea una estrategia de contenido para una campaña de marketing de "${nombreMarca}"`;
-      if (descripcionMarca) p += ` que ofrece ${descripcionMarca}`;
-      if (objetoCampana) p += ` con el objetivo de ${objetoCampana}`;
-      if (presupuesto) p += ` con presupuesto de ${presupuesto}`;
-      p += `. Incluye: copy atractivo para diferentes formatos (post, historia, carrusel, video corto), mensajes clave, ángulos creativos, propuestas de valor diferenciadas, variaciones de CTA y recomendaciones de timing y segmentación`;
     }
 
-    if (herramientaIA) {
-      p += `\n\nOptimiza este contenido para ser usado en ${herramientaIA}. Si es posible, estructura la respuesta donde sea detallada pero práctica para implementar inmediatamente.`;
+    if (tipo === 'buyer') {
+      p += `\nObjetivo:\nDefinir buyer personas claros y accionables.\n\n`;
+      if (audiencia) p += `Audiencia principal: ${audiencia}\n`;
+      if (dolores) p += `Dolores y problemas: ${dolores}\n`;
+
+      p += `\nEntregable esperado:\n`;
+      p += `Para cada buyer persona incluí:\n`;
+      p += `- Perfil demográfico\n`;
+      p += `- Objetivos\n`;
+      p += `- Motivaciones\n`;
+      p += `- Frustraciones\n`;
+      p += `- Objeciones de compra\n`;
+      p += `- Canales de información\n`;
+      p += `- Tipo de contenido que consume\n`;
+    }
+
+    if (tipo === 'calendario') {
+      p += `\nObjetivo:\nCrear un calendario de contenidos estratégico.\n\n`;
+      p += `Condiciones:\n`;
+      p += `Duración: ${duracion}\n`;
+      if (plataforma) p += `Plataforma: ${plataforma}\n`;
+      if (frecuencia) p += `Frecuencia: ${frecuencia}\n`;
+
+      p += `\nEntregable esperado:\n`;
+      p += `- Ideas de contenido por semana\n`;
+      p += `- Objetivo de cada publicación\n`;
+      p += `- Formato sugerido\n`;
+      p += `- CTA recomendado\n`;
+      p += `- Métricas a medir\n`;
+    }
+
+    if (tipo === 'campana') {
+      p += `\nObjetivo:\nDiseñar una campaña de marketing digital.\n\n`;
+      if (objetivoCampana) p += `Objetivo de la campaña: ${objetivoCampana}\n`;
+      if (presupuesto) p += `Presupuesto estimado: ${presupuesto}\n`;
+
+      p += `\nEntregable esperado:\n`;
+      p += `- Concepto creativo\n`;
+      p += `- Mensaje principal\n`;
+      p += `- Ideas de contenido\n`;
+      p += `- Canales recomendados\n`;
+      p += `- KPIs clave\n`;
     }
 
     setPrompt(p);
+    setError(false);
   };
 
   const copiar = () => {
@@ -100,269 +118,180 @@ export default function MarketingDigital() {
 
   return (
     <Container maxWidth="sm" sx={{ py: 4 }}>
-      <Typography variant="h4" gutterBottom>📱 Prompt de Marketing Digital</Typography>
-
-      <Typography variant="body2" color="textSecondary" mb={3}>
-        Genera prompts para crear estrategias de marketing con IA. Puedes usar estos prompts en 
-        <strong> ChatGPT</strong>, <strong>Google Gemini</strong>, <strong>Claude</strong> o cualquier herramienta de IA que prefieras.
+      <Typography variant="h4" gutterBottom>
+        📈 Prompt de Marketing Digital
       </Typography>
 
-      <Typography variant="body2" color="textSecondary" mb={3}>
-        Selecciona el tipo de contenido de marketing que necesitas, proporciona detalles sobre tu marca 
-        y te generaremos un prompt optimizado para obtener resultados profesionales.
+      <Typography variant="body2" color="textSecondary" mb={2}>
+        Genera prompts profesionales para branding, contenidos y campañas de marketing.
       </Typography>
 
-      {/* Tipo de Marketing */}
-      <Box mt={2}>
-        <FormControl fullWidth>
-          <InputLabel>Tipo de Contenido de Marketing</InputLabel>
-          <Select
-            value={tipoMarketing}
-            onChange={(e) => setTipoMarketing(e.target.value)}
-            label="Tipo de Contenido de Marketing"
-          >
-            <MenuItem value="">-- Selecciona una opción --</MenuItem>
-            <MenuItem value="brief-de-marca">📋 Brief de Marca</MenuItem>
-            <MenuItem value="buyer-persona">👤 Buyer Persona</MenuItem>
-            <MenuItem value="calendario-contenido">📅 Calendario de Contenido</MenuItem>
-            <MenuItem value="contenido-campana">🎯 Contenido de Campaña</MenuItem>
-          </Select>
-        </FormControl>
-      </Box>
+      <FormControl fullWidth sx={{ mb: 2 }}>
+        <InputLabel>Tipo de Prompt</InputLabel>
+        <Select value={tipo} label="Tipo de Prompt" onChange={(e) => setTipo(e.target.value)}>
+          <MenuItem value="">-- Selecciona --</MenuItem>
+          <MenuItem value="brief">📋 Brief de Marca</MenuItem>
+          <MenuItem value="buyer">👤 Buyer Persona</MenuItem>
+          <MenuItem value="calendario">📅 Calendario de Contenidos</MenuItem>
+          <MenuItem value="campana">🎯 Campaña de Marketing</MenuItem>
+        </Select>
+        <FormHelperText>Elige el tipo de contenido que querés generar</FormHelperText>
+      </FormControl>
 
-      {/* Campo común: Nombre de la Marca */}
       <TextField
         fullWidth
-        label="Nombre de la Marca / Empresa"
+        label="Nombre de la marca"
         margin="normal"
-        value={nombreMarca}
-        onChange={(e) => {
-          setNombreMarca(e.target.value);
-          setError(false);
-        }}
+        value={marca}
+        onChange={(e) => setMarca(e.target.value)}
         required
-        helperText="Ingresa el nombre de tu marca o empresa"
       />
 
-      {/* Campo común: Descripción de la Marca */}
       <TextField
         fullWidth
-        label="¿Qué ofrece o hace tu marca?"
+        label="¿Qué hace la marca?"
         margin="normal"
         multiline
         rows={2}
-        value={descripcionMarca}
-        onChange={(e) => setDescripcionMarca(e.target.value)}
-        helperText="Ej: ropa sostenible, software de gestión, servicios de coaching"
+        value={descripcion}
+        onChange={(e) => setDescripcion(e.target.value)}
       />
 
-      {/* Campo común: Industria */}
       <TextField
         fullWidth
         label="Industria"
         margin="normal"
         value={industria}
         onChange={(e) => setIndustria(e.target.value)}
-        helperText="Ej: tecnología, moda, educación, finanzas"
       />
 
-      {/* Campos específicos según tipo */}
-      {tipoMarketing === 'brief-de-marca' && (
-        <Box mt={2}>
-          <FormControl fullWidth>
-            <InputLabel>¿Incluir objetivos SMART?</InputLabel>
-            <Select
-              value={usarSmart}
-              onChange={(e) => setUsarSmart(e.target.value)}
-              label="¿Incluir objetivos SMART?"
-            >
-              <MenuItem value="no">No</MenuItem>
-              <MenuItem value="si">Sí, incluir objetivos SMART</MenuItem>
-            </Select>
-            <FormHelperText>SMART = Específicos, Medibles, Alcanzables, Relevantes, Temporizados</FormHelperText>
-          </FormControl>
-        </Box>
+      {tipo === 'brief' && (
+        <FormControl fullWidth sx={{ mt: 2 }}>
+          <InputLabel>¿Incluir objetivos SMART?</InputLabel>
+          <Select value={usarSmart} label="¿Incluir objetivos SMART?" onChange={(e) => setUsarSmart(e.target.value)}>
+            <MenuItem value="no">No</MenuItem>
+            <MenuItem value="si">Sí</MenuItem>
+          </Select>
+        </FormControl>
       )}
 
-      {tipoMarketing === 'buyer-persona' && (
+      {tipo === 'buyer' && (
         <>
           <TextField
             fullWidth
-            label="¿A quién le vendes principalmente?"
+            label="Audiencia principal"
             margin="normal"
-            value={compradores}
-            onChange={(e) => setCompradoresPersona(e.target.value)}
-            helperText="Ej: empresarios, padres millennials, estudiantes de pregrado"
+            value={audiencia}
+            onChange={(e) => setAudiencia(e.target.value)}
           />
           <TextField
             fullWidth
-            label="¿Cuáles son sus principales desafíos o problemas?"
+            label="Principales dolores o problemas"
             margin="normal"
             multiline
             rows={2}
-            value={painPoints}
-            onChange={(e) => setPainPoints(e.target.value)}
-            helperText="Ej: falta de tiempo, presupuesto limitado, formación deficiente"
+            value={dolores}
+            onChange={(e) => setDolores(e.target.value)}
           />
         </>
       )}
 
-      {tipoMarketing === 'calendario-contenido' && (
+      {tipo === 'calendario' && (
         <>
-          <Box mt={2}>
-            <FormControl fullWidth>
-              <InputLabel>Duración del Calendario</InputLabel>
-              <Select
-                value={duracionCalendario}
-                onChange={(e) => setDuracionCalendario(e.target.value)}
-                label="Duración del Calendario"
-              >
-                <MenuItem value="mes">1 Mes</MenuItem>
-                <MenuItem value="trimestre">3 Meses (Trimestre)</MenuItem>
-                <MenuItem value="semestre">6 Meses (Semestre)</MenuItem>
-                <MenuItem value="ano">1 Año</MenuItem>
-              </Select>
-            </FormControl>
-          </Box>
-
-          <Box mt={2}>
-            <FormControl fullWidth>
-              <InputLabel>Plataformas</InputLabel>
-              <Select
-                value={plataformaSeleccionada}
-                onChange={(e) => setPlataformaSeleccionada(e.target.value)}
-                label="Plataformas"
-              >
-                <MenuItem value="">-- Selecciona --</MenuItem>
-                {plataformas.map((p) => (
-                  <MenuItem key={p} value={p}>{p}</MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-          </Box>
+          <FormControl fullWidth sx={{ mt: 2 }}>
+            <InputLabel>Duración</InputLabel>
+            <Select value={duracion} label="Duración" onChange={(e) => setDuracion(e.target.value)}>
+              <MenuItem value="mes">1 mes</MenuItem>
+              <MenuItem value="trimestre">3 meses</MenuItem>
+              <MenuItem value="semestre">6 meses</MenuItem>
+              <MenuItem value="anio">1 año</MenuItem>
+            </Select>
+          </FormControl>
 
           <TextField
             fullWidth
-            label="Frecuencia de Publicación"
+            label="Plataforma"
             margin="normal"
-            value={frecuenciaPublicacion}
-            onChange={(e) => setFrecuenciaPublicacion(e.target.value)}
-            helperText="Ej: 3 veces por semana, diario, 2 veces al día"
+            value={plataforma}
+            onChange={(e) => setPlataforma(e.target.value)}
+          />
+
+          <TextField
+            fullWidth
+            label="Frecuencia de publicación"
+            margin="normal"
+            value={frecuencia}
+            onChange={(e) => setFrecuencia(e.target.value)}
           />
         </>
       )}
 
-      {tipoMarketing === 'contenido-campana' && (
+      {tipo === 'campana' && (
         <>
-          <Box mt={2}>
-            <FormControl fullWidth>
-              <InputLabel>Objetivo de la Campaña</InputLabel>
-              <Select
-                value={objetoCampana}
-                onChange={(e) => setObjetoCampana(e.target.value)}
-                label="Objetivo de la Campaña"
-              >
-                <MenuItem value="">-- Selecciona --</MenuItem>
-                {objetosCampana.map((o) => (
-                  <MenuItem key={o} value={o}>{o}</MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-          </Box>
-
           <TextField
             fullWidth
-            label="Presupuesto (opcional)"
+            label="Objetivo de la campaña"
+            margin="normal"
+            value={objetivoCampana}
+            onChange={(e) => setObjetivoCampana(e.target.value)}
+          />
+          <TextField
+            fullWidth
+            label="Presupuesto"
             margin="normal"
             value={presupuesto}
             onChange={(e) => setPresupuesto(e.target.value)}
-            helperText="Ej: $500-1000, bajo presupuesto, sin límite"
           />
         </>
       )}
 
-      {/* Herramienta de IA */}
-      <Box mt={2}>
-        <FormControl fullWidth>
-          <InputLabel>Herramienta de IA (Opcional)</InputLabel>
-          <Select
-            value={herramientaIA}
-            onChange={(e) => setHerramientaIA(e.target.value)}
-            label="Herramienta de IA (Opcional)"
-          >
-            <MenuItem value="">-- Cualquiera --</MenuItem>
-            {herramientasIA.map((h) => (
-              <MenuItem key={h} value={h}>{h}</MenuItem>
-            ))}
-          </Select>
-        </FormControl>
-      </Box>
-
-      {/* Botón Generar */}
-      <Button
-        variant="contained"
-        color="primary"
-        fullWidth
-        sx={{ mt: 3, mb: 2 }}
-        onClick={generarPrompt}
-      >
-        Generar Prompt 📝
+      <Button variant="contained" fullWidth sx={{ mt: 3 }} onClick={generarPrompt}>
+        Generar
       </Button>
 
-      {/* Error Snackbar */}
+      {prompt && (
+        <Box mt={4}>
+          <Paper sx={{ backgroundColor: '#f0f0f0', p: 2, mb: 1 }}>
+            <Typography
+              sx={{
+                whiteSpace: 'pre-wrap',
+                fontFamily: 'monospace',
+                fontSize: '0.9rem',
+                color: '#444'
+              }}
+            >
+              {prompt}
+            </Typography>
+          </Paper>
+
+          <Button variant="outlined" fullWidth onClick={copiar}>
+            📋 Copiar
+          </Button>
+
+          <Typography variant="body2" color="textSecondary" sx={{ fontStyle: 'italic', mt: 2 }}>
+            Copia el prompt de arriba y pégalo en tu IA de texto preferida, como
+            <strong> ChatGPT</strong>, <strong> Google Gemini</strong> o <strong> Claude</strong>,
+            para generar el contenido.
+          </Typography>
+        </Box>
+      )}
+
       <Snackbar
         open={error}
-        autoHideDuration={4000}
+        autoHideDuration={3000}
         onClose={() => setError(false)}
         anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
       >
-        <Alert onClose={() => setError(false)} severity="error">
-          {mensajeError}
-        </Alert>
+        <Alert severity="error">Completá el tipo y el nombre de la marca.</Alert>
       </Snackbar>
 
-      {/* Prompt Generado */}
-      {prompt && (
-        <Paper sx={{ p: 3, mt: 3, backgroundColor: '#f5f5f5' }}>
-          <Typography variant="subtitle1" sx={{ fontWeight: 'bold', mb: 2 }}>
-            ✨ Tu Prompt Generado:
-          </Typography>
-          <Typography
-            variant="body2"
-            sx={{
-              whiteSpace: 'pre-wrap',
-              wordBreak: 'break-word',
-              mb: 2,
-              fontFamily: 'monospace',
-              backgroundColor: 'white',
-              p: 2,
-              borderRadius: '4px',
-              border: '1px solid #ddd'
-            }}
-          >
-            {prompt}
-          </Typography>
-          <Button
-            variant="contained"
-            color="success"
-            fullWidth
-            onClick={copiar}
-          >
-            {copiado ? '✓ Copiado al Portapapeles' : '📋 Copiar Prompt'}
-          </Button>
-        </Paper>
-      )}
-
-      {/* Snackbar de Confirmación */}
       <Snackbar
         open={copiado}
         autoHideDuration={2000}
         onClose={() => setCopiado(false)}
         anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
       >
-        <Alert onClose={() => setCopiado(false)} severity="success">
-          ¡Prompt copiado al portapapeles!
-        </Alert>
+        <Alert severity="success">Prompt copiado al portapapeles ✅</Alert>
       </Snackbar>
     </Container>
   );
