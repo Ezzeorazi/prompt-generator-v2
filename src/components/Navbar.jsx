@@ -1,91 +1,106 @@
-import { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import {
-    AppBar, Toolbar, Typography, IconButton, Drawer,
-    List, ListItem, ListItemButton, ListItemText, Box, useMediaQuery, useTheme, Button
+  AppBar, Toolbar, Typography, IconButton, Drawer,
+  List, ListItem, ListItemButton, ListItemText, Box, useMediaQuery, useTheme, Button
 } from '@mui/material';
-import MenuIcon from '@mui/icons-material/Menu';
-import ImageIcon from '@mui/icons-material/Image';
-import TextFieldsIcon from '@mui/icons-material/TextFields';
-import CodeIcon from '@mui/icons-material/Code';
-import InfoIcon from '@mui/icons-material/Info';
-import VideocamIcon from '@mui/icons-material/Videocam';
-import BlenderIcon from '@mui/icons-material/Blender'; // Necesitarás instalar este icono: npm install @mui/icons-material
-import CampaignIcon from '@mui/icons-material/Campaign';
-import { Link } from 'react-router-dom';
+import { Menu, Image as ImageIcon, Type, Code, Video, Box as BoxIcon, Megaphone, Info, Terminal } from 'lucide-react';
+import { Link, useLocation } from 'react-router-dom';
 
-const sections = [
-    { label: 'Imagen', path: '/imagen', icon: <ImageIcon sx={{ mr: 1 }} /> },
-    { label: 'Texto', path: '/texto', icon: <TextFieldsIcon sx={{ mr: 1 }} /> },
-    { label: 'Código', path: '/codigo', icon: <CodeIcon sx={{ mr: 1 }} /> },
-    { label: 'Video', path: '/video', icon: <VideocamIcon sx={{ mr: 1 }} /> },
-    { label: 'Marketing Digital', path: '/marketing-digital', icon: <CampaignIcon sx={{ mr: 1 }} /> },
-    { label: 'Diseño 3D', path: '/diseno-3d', icon: <BlenderIcon sx={{ mr: 1 }} /> }, // Nueva sección
-    { label: '¿Qué son las IA?', path: '/que-son-las-ai', icon: <InfoIcon sx={{ mr: 1 }} /> },
-    // Podés agregar más rutas acá
+const SECCIONES = [
+  { label: 'Imagen', path: '/imagen', icon: <ImageIcon size={18} /> },
+  { label: 'Texto', path: '/texto', icon: <Type size={18} /> },
+  { label: 'Código', path: '/codigo', icon: <Code size={18} /> },
+  { label: 'Video', path: '/video', icon: <Video size={18} /> },
+  { label: 'Marketing', path: '/marketing-digital', icon: <Megaphone size={18} /> },
+  { label: '3D', path: '/diseno-3d', icon: <BoxIcon size={18} /> },
+  { label: 'Docs (IA)', path: '/que-son-las-ai', icon: <Info size={18} /> },
 ];
 
-function Navbar() {
-    const [open, setOpen] = useState(false);
-    const theme = useTheme();
-    const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+export default function Navbar() {
+  const [open, setOpen] = useState(false);
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
+  const location = useLocation();
 
-    const toggleDrawer = (state) => () => {
-        setOpen(state);
-    };
+  const toggleDrawer = (state) => () => setOpen(state);
 
-    return (
-        <>
-            <AppBar position={isMobile ? "fixed" : "static"}>
-                <Toolbar sx={{ display: 'flex', justifyContent: 'space-between' }}>
-                    <Typography variant="h6" component={Link} to="/" sx={{ textDecoration: 'none', color: 'inherit' }}>
-                        Prompt Generator
-                    </Typography>
+  return (
+    <>
+      <AppBar position="sticky" sx={{ bgcolor: '#0f172a', borderBottom: '1px solid #1e293b', boxShadow: 'none' }}>
+        <Toolbar sx={{ justifyContent: 'space-between', minHeight: '70px' }}>
+          <Typography 
+            variant="h6" 
+            component={Link} 
+            to="/" 
+            sx={{ textDecoration: 'none', color: '#f8fafc', fontWeight: 'bold', fontFamily: 'monospace', display: 'flex', alignItems: 'center', gap: 1 }}
+          >
+            <Terminal color="#38bdf8" size={24} /> prompt_gen
+          </Typography>
 
-                    {isMobile ? (
-                        <IconButton color="inherit" edge="end" onClick={toggleDrawer(true)}>
-                            <MenuIcon />
-                        </IconButton>
-                    ) : (
-                        <Box sx={{ display: 'flex', gap: 2 }}>
-                            {sections.map(({ label, path, icon }) => (
-                                <Button
-                                    key={path}
-                                    component={Link}
-                                    to={path}
-                                    color="inherit"
-                                    startIcon={icon}
-                                    sx={{
-                                        border: `1px solid ${theme.palette.divider}`,
-                                        borderRadius: theme.shape.borderRadius,
-                                        '&:hover': {
-                                            backgroundColor: theme.palette.action.hover,
-                                        },
-                                    }}
-                                >
-                                    {label}
-                                </Button>
-                            ))}
-                        </Box>
-                    )}
-                </Toolbar>
-            </AppBar>
+          {isMobile ? (
+            <IconButton color="inherit" edge="end" onClick={toggleDrawer(true)}>
+              <Menu color="#f8fafc" />
+            </IconButton>
+          ) : (
+            <Box sx={{ display: 'flex', gap: 1 }}>
+              {SECCIONES.map(({ label, path, icon }) => {
+                const isActive = location.pathname === path;
+                return (
+                  <Button
+                    key={path}
+                    component={Link}
+                    to={path}
+                    startIcon={icon}
+                    sx={{
+                      color: isActive ? '#38bdf8' : '#94a3b8',
+                      textTransform: 'none',
+                      fontWeight: isActive ? 'bold' : 'normal',
+                      bgcolor: isActive ? '#0284c715' : 'transparent',
+                      px: 2,
+                      py: 1,
+                      borderRadius: 2,
+                      '&:hover': { bgcolor: '#1e293b', color: '#f8fafc' },
+                    }}
+                  >
+                    {label}
+                  </Button>
+                );
+              })}
+            </Box>
+          )}
+        </Toolbar>
+      </AppBar>
 
-            <Drawer anchor="right" open={open} onClose={toggleDrawer(false)}>
-                <Box sx={{ width: 250 }} role="presentation" onClick={toggleDrawer(false)}>
-                    <List>
-                        {sections.map(({ label, path, icon }) => (
-                            <ListItem key={path} disablePadding>
-                                <ListItemButton component={Link} to={path}>
-                                    {icon}
-                                    <ListItemText primary={label} />
-                                </ListItemButton>
-                            </ListItem>
-                        ))}
-                    </List>
-                </Box>
-            </Drawer>
-        </>
-    );
+      {/* Menú Móvil Oscuro */}
+      <Drawer 
+        anchor="right" 
+        open={open} 
+        onClose={toggleDrawer(false)}
+        PaperProps={{ sx: { bgcolor: '#0f172a', borderLeft: '1px solid #1e293b', width: 280 } }}
+      >
+        <Box role="presentation" onClick={toggleDrawer(false)} sx={{ p: 2 }}>
+          <Typography variant="subtitle2" sx={{ color: '#64748b', mb: 2, px: 2, fontFamily: 'monospace' }}>// MÓDULOS</Typography>
+          <List>
+            {SECCIONES.map(({ label, path, icon }) => (
+              <ListItem key={path} disablePadding sx={{ mb: 1 }}>
+                <ListItemButton 
+                  component={Link} 
+                  to={path}
+                  sx={{ 
+                    borderRadius: 2, 
+                    color: location.pathname === path ? '#38bdf8' : '#cbd5e1',
+                    bgcolor: location.pathname === path ? '#0284c715' : 'transparent',
+                    '&:hover': { bgcolor: '#1e293b' }
+                  }}
+                >
+                  <Box sx={{ mr: 2, display: 'flex' }}>{icon}</Box>
+                  <ListItemText primary={label} primaryTypographyProps={{ fontSize: '0.95rem', fontWeight: location.pathname === path ? 'bold' : 'normal' }} />
+                </ListItemButton>
+              </ListItem>
+            ))}
+          </List>
+        </Box>
+      </Drawer>
+    </>
+  );
 }
-
-export default Navbar;
