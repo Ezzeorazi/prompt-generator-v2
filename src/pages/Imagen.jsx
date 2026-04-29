@@ -1,55 +1,66 @@
 import React, { useState, useMemo, useCallback } from 'react';
-import { 
-  Box, Typography, Button, TextField, Paper, Grid, 
-  Chip, Snackbar, Alert, Container, MenuItem, Divider 
-} from '@mui/material';
-import { Copy, Terminal, CheckCircle, BookOpen, RotateCcw, Image as ImageIcon, Sparkles, Wand2, Paintbrush, Layers } from 'lucide-react';
+import { Box, Typography, TextField, Paper, MenuItem, Divider } from '@mui/material';
+import { Wand2, Layers, Paintbrush, Image as ImageIcon, Sparkles } from 'lucide-react';
+import PromptBuilderLayout, { SELECT_MENU_PROPS } from '../components/PromptBuilderLayout';
 
-// Templates premium para deslumbrar a los usuarios
-const EJEMPLOS_IMAGEN = [
+const EJEMPLOS = [
   {
-    titulo: "📸 Retrato Cinematográfico",
+    titulo: '📸 Retrato Cinematográfico',
     datos: {
-      modo: "generar",
-      tema: "Retrato en primer plano de una mujer ciberpunk con cables de neón en el cabello, mirada desafiante, lluvia de fondo.",
-      estilo: "Fotorealismo hiperdetallado, Unreal Engine 5",
-      iluminacion: "Luz de neón azul y rosa (Cyberpunk lighting), rim light",
-      lente: "Lente 85mm, f/1.8, profundidad de campo superficial (Bokeh)",
-      aspecto: "9:16 (Vertical)"
-    }
+      modo: 'generar',
+      tema: 'Retrato en primer plano de una mujer ciberpunk con cables de neón en el cabello, mirada desafiante, lluvia de fondo.',
+      estilo: 'Fotorealismo hiperdetallado, Unreal Engine 5, luz de neón azul y rosa, lente 85mm f/1.8, Bokeh',
+      aspecto: '9:16 (Vertical / Reels)',
+    },
   },
   {
-    titulo: "✏️ Pasar Boceto a 3D",
+    titulo: '✏️ Boceto a 3D',
     datos: {
-      modo: "modificar",
-      tema: "Transformar este dibujo a lápiz en un render 3D realista de Pixar.",
-      estilo: "3D Animation, Disney Pixar style, texturas suaves",
-      iluminacion: "Studio lighting, luz cálida de rebote",
-      lente: "Plano general",
-      aspecto: "1:1 (Cuadrado)"
-    }
+      modo: 'modificar',
+      tema: 'Transformar este dibujo a lápiz en un render 3D realista estilo Pixar.',
+      estilo: '3D Animation, Disney Pixar style, texturas suaves, studio lighting cálido',
+      aspecto: '1:1 (Cuadrado / Post)',
+    },
   },
   {
-    titulo: "🎨 Logo Minimalista",
+    titulo: '🎨 Logo Minimalista',
     datos: {
-      modo: "generar",
+      modo: 'generar',
       tema: "Logo minimalista para una cafetería llamada 'Lumina', combinando un grano de café y una bombilla de luz.",
-      estilo: "Vector art, flat design, minimalista, fondo blanco puro",
-      iluminacion: "Iluminación plana, sin sombras",
-      lente: "Vista frontal 2D",
-      aspecto: "1:1 (Cuadrado)"
-    }
-  }
+      estilo: 'Vector art, flat design, minimalista, fondo blanco puro, sin sombras',
+      aspecto: '1:1 (Cuadrado / Post)',
+    },
+  },
 ];
 
-const ESTADO_INICIAL = {
-  modo: 'generar', // generar o modificar
-  tema: '',
-  estilo: '',
-  iluminacion: '',
-  lente: '',
-  aspecto: ''
-};
+const ESTADO_INICIAL = { modo: 'generar', tema: '', estilo: '', aspecto: '' };
+
+const GUIA_MODELOS = [
+  {
+    nombre: 'Midjourney',
+    color: '#059669',
+    bgColor: '#064e3b20',
+    desc: 'El mejor para imágenes artísticas y fotorrealismo. Requiere Discord. Lee el parámetro --ar del prompt.',
+  },
+  {
+    nombre: 'Gemini (Google)',
+    color: '#2563eb',
+    bgColor: '#1e3a8a20',
+    desc: 'Ideal para editar imágenes. Subí una foto y usá el modo "Modificar" para cambiar fondos o estilos.',
+  },
+  {
+    nombre: 'ChatGPT / DALL-E',
+    color: '#d946ef',
+    bgColor: '#701a7520',
+    desc: 'El más preciso con las instrucciones. Perfecto cuando el resultado debe incluir texto legible.',
+  },
+  {
+    nombre: 'Canva IA',
+    color: '#0d9488',
+    bgColor: '#0f766e20',
+    desc: 'Para creadores de contenido. Generá íconos, fondos y assets directamente en tu diseño.',
+  },
+];
 
 export default function Imagen() {
   const [formulario, setFormulario] = useState(ESTADO_INICIAL);
@@ -57,36 +68,30 @@ export default function Imagen() {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormulario(prev => ({ ...prev, [name]: value }));
+    setFormulario((prev) => ({ ...prev, [name]: value }));
   };
 
   const promptGenerado = useMemo(() => {
-    const { modo, tema, estilo, iluminacion, lente, aspecto } = formulario;
-    
+    const { modo, tema, estilo, aspecto } = formulario;
     if (!tema.trim()) return '';
 
     const partes = [];
-    
-    // Switch de Modo: Generar vs Modificar
+
     if (modo === 'modificar') {
-      partes.push(`[ACCIÓN: IMAGE-TO-IMAGE]`);
-      partes.push(`Basándote estrictamente en la imagen adjunta, aplica las siguientes modificaciones/transformaciones:`);
+      partes.push('[IMAGE-TO-IMAGE]');
+      partes.push('Basándote en la imagen adjunta, aplicá los siguientes cambios:');
       partes.push(`"${tema.trim()}"\n`);
     } else {
-      partes.push(`[ACCIÓN: TEXT-TO-IMAGE]`);
-      partes.push(`Genera una imagen con la siguiente descripción principal:`);
+      partes.push('[TEXT-TO-IMAGE]');
+      partes.push('Generá una imagen con la siguiente descripción:');
       partes.push(`"${tema.trim()}"\n`);
     }
-    
-    partes.push(`[DIRECCIÓN DE ARTE]`);
-    if (estilo.trim()) partes.push(`- Estilo Visual: ${estilo}`);
-    if (iluminacion.trim()) partes.push(`- Iluminación: ${iluminacion}`);
-    if (lente.trim()) partes.push(`- Cámara/Composición: ${lente}`);
-    
-    // Agregamos el parámetro técnico de ratio para Midjourney, aunque sirve como contexto para las demás
+
+    partes.push('[DIRECCIÓN DE ARTE]');
+    if (estilo.trim()) partes.push(`- Estilo, iluminación y cámara: ${estilo}`);
     if (aspecto.trim()) {
-      let ratio = aspecto.split(' ')[0]; // Extrae "16:9" de "16:9 (Horizontal)"
-      partes.push(`- Relación de aspecto deseada: ${aspecto} (--ar ${ratio})`);
+      const ratio = aspecto.split(' ')[0];
+      partes.push(`- Formato: ${aspecto} (--ar ${ratio})`);
     }
 
     return partes.join('\n').trim();
@@ -102,264 +107,122 @@ export default function Imagen() {
     }
   }, [promptGenerado]);
 
-  return (
-    <Container maxWidth="lg" sx={{ my: 4 }}>
-      <Paper elevation={4} sx={{ overflow: 'hidden', borderRadius: 2, bgcolor: '#0f172a' }}>
-        
-        {/* Cabecera Estilo Consola */}
-        <Box sx={{ bgcolor: '#020617', p: 3, color: 'white', borderBottom: '1px solid #1e293b' }}>
-          <Typography variant="h5" sx={{ display: 'flex', alignItems: 'center', gap: 1.5, fontWeight: 'bold', fontFamily: 'monospace' }}>
-            <ImageIcon color="#10b981" /> Image_Gen_Studio_Pro
-          </Typography>
-          <Typography variant="body2" sx={{ color: '#94a3b8', mt: 1 }}>
-            Motor de prompts visuales avanzados. Diseñá desde cero o alterá imágenes existentes.
-          </Typography>
-        </Box>
-
-        <Box sx={{ p: 4 }}>
-          
-          {/* SECCIÓN ESTRELLA: GUÍA DE MODELOS IA */}
-          <Box sx={{ mb: 5 }}>
-            <Typography variant="h6" sx={{ color: '#f8fafc', fontWeight: 'bold', mb: 2, display: 'flex', alignItems: 'center', gap: 1 }}>
-              <Sparkles size={20} color="#10b981" /> ¿Dónde pego este prompt? Elige tu motor ideal:
+  const guiaModelos = (
+    <Box sx={{ mb: 4 }}>
+      <Typography
+        variant="h6"
+        sx={{ color: '#f8fafc', fontWeight: 'bold', mb: 2, display: 'flex', alignItems: 'center', gap: 1 }}
+      >
+        <Sparkles size={20} color="#10b981" /> ¿Dónde pego el prompt? Elegí tu herramienta:
+      </Typography>
+      <Box
+        sx={{
+          display: 'grid',
+          gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr', md: '1fr 1fr 1fr 1fr' },
+          gap: 2,
+        }}
+      >
+        {GUIA_MODELOS.map((m) => (
+          <Paper
+            key={m.nombre}
+            sx={{ p: 2, bgcolor: m.bgColor, border: `1px solid ${m.color}`, borderRadius: 2 }}
+          >
+            <Typography variant="subtitle2" sx={{ color: m.color, fontWeight: 'bold', mb: 0.5 }}>
+              {m.nombre}
             </Typography>
-            <Grid container spacing={2}>
-              <Grid item xs={12} sm={6} md={3}>
-                <Paper sx={{ p: 2, bgcolor: '#064e3b20', border: '1px solid #059669', height: '100%', borderRadius: 2 }}>
-                  <Typography variant="subtitle2" sx={{ color: '#34d399', fontWeight: 'bold', mb: 1 }}>Midjourney</Typography>
-                  <Typography variant="body2" sx={{ color: '#cbd5e1', fontSize: '0.8rem' }}>
-                    <strong>El Rey del Arte.</strong> Insuperable en fotorealismo, texturas y cinematografía. Requiere Discord. Lee el parámetro <code>--ar</code> del prompt.
-                  </Typography>
-                </Paper>
-              </Grid>
-              <Grid item xs={12} sm={6} md={3}>
-                <Paper sx={{ p: 2, bgcolor: '#1e3a8a20', border: '1px solid #2563eb', height: '100%', borderRadius: 2 }}>
-                  <Typography variant="subtitle2" sx={{ color: '#60a5fa', fontWeight: 'bold', mb: 1 }}>Nano Banana 2 (Gemini)</Typography>
-                  <Typography variant="body2" sx={{ color: '#cbd5e1', fontSize: '0.8rem' }}>
-                    <strong>La Bestia de la Edición.</strong> Sube una imagen y usa el modo "Modificar". Ideal para cambiar fondos, fusionar imágenes o pedir variaciones de estilo rápido.
-                  </Typography>
-                </Paper>
-              </Grid>
-              <Grid item xs={12} sm={6} md={3}>
-                <Paper sx={{ p: 2, bgcolor: '#701a7520', border: '1px solid #d946ef', height: '100%', borderRadius: 2 }}>
-                  <Typography variant="subtitle2" sx={{ color: '#f472b6', fontWeight: 'bold', mb: 1 }}>ChatGPT (DALL-E 3)</Typography>
-                  <Typography variant="body2" sx={{ color: '#cbd5e1', fontSize: '0.8rem' }}>
-                    <strong>El Obediente.</strong> Sigue las instrucciones al pie de la letra. Es el mejor si necesitás que la imagen contenga textos legibles (como un logo o cartel).
-                  </Typography>
-                </Paper>
-              </Grid>
-              <Grid item xs={12} sm={6} md={3}>
-                <Paper sx={{ p: 2, bgcolor: '#0f766e20', border: '1px solid #0d9488', height: '100%', borderRadius: 2 }}>
-                  <Typography variant="subtitle2" sx={{ color: '#2dd4bf', fontWeight: 'bold', mb: 1 }}>Canva Magic Media</Typography>
-                  <Typography variant="body2" sx={{ color: '#cbd5e1', fontSize: '0.8rem' }}>
-                    <strong>Para Creadores.</strong> Ideal para generar assets, íconos o fondos directamente en tu mesa de trabajo para redes sociales.
-                  </Typography>
-                </Paper>
-              </Grid>
-            </Grid>
+            <Typography variant="body2" sx={{ color: '#cbd5e1', fontSize: '0.8rem', lineHeight: 1.5 }}>
+              {m.desc}
+            </Typography>
+          </Paper>
+        ))}
+      </Box>
+      <Divider sx={{ borderColor: '#334155', mt: 4 }} />
+    </Box>
+  );
+
+  return (
+    <PromptBuilderLayout
+      titulo="Generador de Imágenes"
+      icono={<ImageIcon color="#10b981" />}
+      color="#10b981"
+      outputColor="#6ee7b7"
+      descripcion="Creá prompts visuales para Midjourney, DALL-E, Canva IA y más."
+      ejemplos={EJEMPLOS}
+      onReset={() => setFormulario(ESTADO_INICIAL)}
+      onCargarEjemplo={setFormulario}
+      promptGenerado={promptGenerado}
+      copiado={copiado}
+      onCopiar={copiarAlPortapapeles}
+      onCerrarSnackbar={() => setCopiado(false)}
+      textoVacio={'Describí tu imagen\npara ver el prompt generado aquí.'}
+      iconoVacio={<Paintbrush size={48} />}
+      labelCopiar="Copiar Prompt"
+      snackbarMsg="Prompt de imagen copiado. ¡A crear!"
+      headerExtra={guiaModelos}
+    >
+      <TextField
+        select
+        label="1. ¿Crear imagen nueva o editar una existente?"
+        name="modo"
+        value={formulario.modo}
+        onChange={handleChange}
+        fullWidth
+        size="small"
+        SelectProps={{ MenuProps: SELECT_MENU_PROPS }}
+      >
+        <MenuItem value="generar">
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+            <Wand2 size={16} /> Crear imagen desde cero
           </Box>
-
-          <Divider sx={{ borderColor: '#334155', mb: 4 }} />
-
-          {/* Zona de Ejemplos Rápida */}
-          <Box sx={{ mb: 4, p: 2.5, bgcolor: '#1e293b', borderRadius: 2, border: '1px solid #334155' }}>
-            <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
-              <Typography variant="subtitle2" sx={{ display: 'flex', alignItems: 'center', gap: 1, color: '#cbd5e1', fontWeight: 'bold' }}>
-                <BookOpen size={16} color="#10b981" /> Cargar Templates Profesionales
-              </Typography>
-              <Button 
-                size="small" 
-                onClick={() => setFormulario(ESTADO_INICIAL)} 
-                startIcon={<RotateCcw size={14} />} 
-                sx={{ color: '#ef4444', textTransform: 'none' }}
-              >
-                Limpiar Lienzo
-              </Button>
-            </Box>
-            <Grid container spacing={1.5}>
-              {EJEMPLOS_IMAGEN.map((ej, idx) => (
-                <Grid item key={idx}>
-                  <Chip 
-                    label={ej.titulo} 
-                    onClick={() => setFormulario(ej.datos)}
-                    sx={{ 
-                      bgcolor: '#0f172a', 
-                      color: '#e2e8f0', 
-                      border: '1px solid #475569',
-                      '&:hover': { bgcolor: '#064e3b', borderColor: '#10b981', color: 'white' } 
-                    }}
-                  />
-                </Grid>
-              ))}
-            </Grid>
+        </MenuItem>
+        <MenuItem value="modificar">
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+            <Layers size={16} /> Modificar imagen que ya tengo
           </Box>
+        </MenuItem>
+      </TextField>
 
-          <Grid container spacing={4}>
-            {/* Columna de Formulario Oscuro */}
-            <Grid item xs={12} md={6}>
-              <Box sx={{ 
-                display: 'flex', flexDirection: 'column', gap: 2.5,
-                '& .MuiTextField-root': {
-                  '& label': { color: '#94a3b8' },
-                  '& label.Mui-focused': { color: '#10b981' },
-                  '& .MuiOutlinedInput-root': {
-                    color: '#f8fafc',
-                    bgcolor: '#1e293b',
-                    '& fieldset': { borderColor: '#334155' },
-                    '&:hover fieldset': { borderColor: '#475569' },
-                    '&.Mui-focused fieldset': { borderColor: '#10b981' },
-                  }
-                }
-              }}>
-                <TextField 
-                  select
-                  label="1. Modo de Generación" 
-                  name="modo" 
-                  value={formulario.modo} 
-                  onChange={handleChange} 
-                  fullWidth 
-                  size="small"
-                >
-                  <MenuItem value="generar"><Wand2 size={16} style={{ marginRight: 8, display:'inline-block', verticalAlign:'middle' }}/> Generar imagen desde cero</MenuItem>
-                  <MenuItem value="modificar"><Layers size={16} style={{ marginRight: 8, display:'inline-block', verticalAlign:'middle' }}/> Modificar imagen existente (Sube una foto a la IA)</MenuItem>
-                </TextField>
+      <TextField
+        label={formulario.modo === 'modificar' ? '2. ¿Qué cambios querés hacer?' : '2. ¿Qué debe aparecer en la imagen?'}
+        name="tema"
+        value={formulario.tema}
+        onChange={handleChange}
+        fullWidth
+        multiline
+        minRows={3}
+        placeholder={
+          formulario.modo === 'modificar'
+            ? 'Ej: Cambiá el fondo por una ciudad futurista y hacé el cielo de color naranja...'
+            : 'Ej: Un astronauta tomando café en Marte al atardecer...'
+        }
+      />
 
-                <TextField 
-                  label={formulario.modo === 'modificar' ? "2. ¿Qué le cambiamos a la imagen adjunta?" : "2. Tema / Sujeto Principal"} 
-                  name="tema" 
-                  value={formulario.tema} 
-                  onChange={handleChange} 
-                  fullWidth 
-                  multiline 
-                  minRows={3} 
-                  placeholder={formulario.modo === 'modificar' ? "Ej: Cambia el fondo a una ciudad futurista..." : "Ej: Un astronauta tomando café en Marte..."} 
-                />
-                
-                <Grid container spacing={2}>
-                  <Grid item xs={12} sm={6}>
-                    <TextField 
-                      label="3. Estilo Artístico" 
-                      name="estilo" 
-                      value={formulario.estilo} 
-                      onChange={handleChange} 
-                      fullWidth 
-                      size="small" 
-                      placeholder="Ej: Pixel art, Fotorealismo, Acuarela..." 
-                    />
-                  </Grid>
-                  <Grid item xs={12} sm={6}>
-                    <TextField 
-                      select
-                      label="4. Aspect Ratio" 
-                      name="aspecto" 
-                      value={formulario.aspecto} 
-                      onChange={handleChange} 
-                      fullWidth 
-                      size="small"
-                    >
-                      <MenuItem value="">-- Libre --</MenuItem>
-                      <MenuItem value="16:9 (Horizontal / Paisaje)">16:9 (Horizontal / Paisaje)</MenuItem>
-                      <MenuItem value="9:16 (Vertical / Reels)">9:16 (Vertical / Reels)</MenuItem>
-                      <MenuItem value="1:1 (Cuadrado / Post)">1:1 (Cuadrado / Post)</MenuItem>
-                      <MenuItem value="4:5 (Vertical Corto)">4:5 (Vertical Corto)</MenuItem>
-                    </TextField>
-                  </Grid>
-                </Grid>
+      <TextField
+        label="3. Estilo, iluminación, cámara (opcional)"
+        name="estilo"
+        value={formulario.estilo}
+        onChange={handleChange}
+        fullWidth
+        size="small"
+        placeholder="Ej: Acuarela, luz natural suave, plano general — o — Fotorealismo, neón, lente macro"
+      />
 
-                <Grid container spacing={2}>
-                  <Grid item xs={12} sm={6}>
-                    <TextField 
-                      label="5. Iluminación" 
-                      name="iluminacion" 
-                      value={formulario.iluminacion} 
-                      onChange={handleChange} 
-                      fullWidth 
-                      size="small" 
-                      placeholder="Ej: Luz de ventana, Neón, Cinematic..." 
-                    />
-                  </Grid>
-                  <Grid item xs={12} sm={6}>
-                    <TextField 
-                      label="6. Cámara / Composición" 
-                      name="lente" 
-                      value={formulario.lente} 
-                      onChange={handleChange} 
-                      fullWidth 
-                      size="small" 
-                      placeholder="Ej: Lente 50mm, Vista aérea, Macro..." 
-                    />
-                  </Grid>
-                </Grid>
-              </Box>
-            </Grid>
-
-            {/* Terminal de Output */}
-            <Grid item xs={12} md={6}>
-              <Box sx={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
-                <Paper sx={{ 
-                  flexGrow: 1, 
-                  bgcolor: '#000000', 
-                  display: 'flex', 
-                  flexDirection: 'column', 
-                  overflow: 'hidden', 
-                  minHeight: 450,
-                  border: '1px solid #334155'
-                }}>
-                  <Box sx={{ bgcolor: '#1e293b', px: 2, py: 1.5, display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid #334155' }}>
-                    <Box sx={{ display: 'flex', gap: 1 }}>
-                      <Box sx={{ width: 12, height: 12, borderRadius: '50%', bgcolor: '#ef4444' }}></Box>
-                      <Box sx={{ width: 12, height: 12, borderRadius: '50%', bgcolor: '#eab308' }}></Box>
-                      <Box sx={{ width: 12, height: 12, borderRadius: '50%', bgcolor: '#22c55e' }}></Box>
-                    </Box>
-                    <Button 
-                      variant="contained" 
-                      onClick={copiarAlPortapapeles} 
-                      disabled={!promptGenerado}
-                      startIcon={copiado ? <CheckCircle size={14} /> : <Copy size={14} />}
-                      sx={{ 
-                        bgcolor: copiado ? '#10b981' : '#059669', 
-                        textTransform: 'none', 
-                        color: 'white',
-                        fontWeight: 'bold',
-                        py: 0.5,
-                        '&:hover': { bgcolor: copiado ? '#047857' : '#047857' }
-                      }}
-                    >
-                      {copiado ? 'Copiado' : 'Copiar Prompt Visual'}
-                    </Button>
-                  </Box>
-                  
-                  <Box sx={{ p: 3, flexGrow: 1, overflowY: 'auto' }}>
-                    {promptGenerado ? (
-                      <Typography component="pre" sx={{ 
-                        color: '#6ee7b7', 
-                        fontFamily: "'Fira Code', monospace", 
-                        whiteSpace: 'pre-wrap', 
-                        fontSize: '0.875rem',
-                        lineHeight: 1.6
-                      }}>
-                        {promptGenerado}
-                      </Typography>
-                    ) : (
-                      <Box sx={{ height: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', color: '#475569' }}>
-                        <Paintbrush size={48} style={{ marginBottom: 16, opacity: 0.3 }} />
-                        <Typography variant="body2" align="center" sx={{ fontFamily: 'monospace' }}>
-                           Lienzo en blanco...<br/>
-                           Describí tu idea a la izquierda para armar la magia.
-                        </Typography>
-                      </Box>
-                    )}
-                  </Box>
-                </Paper>
-              </Box>
-            </Grid>
-          </Grid>
-        </Box>
-      </Paper>
-
-      <Snackbar open={copiado} autoHideDuration={2000} onClose={() => setCopiado(false)}>
-        <Alert severity="success" variant="filled" sx={{ width: '100%' }}>Prompt de Imagen listo para renderizar 🎨</Alert>
-      </Snackbar>
-    </Container>
+      <TextField
+        select
+        label="4. Formato de la imagen"
+        name="aspecto"
+        value={formulario.aspecto}
+        onChange={handleChange}
+        fullWidth
+        size="small"
+        SelectProps={{ MenuProps: SELECT_MENU_PROPS }}
+      >
+        <MenuItem value="">Sin preferencia</MenuItem>
+        <MenuItem value="16:9 (Horizontal / Paisaje)">16:9 — Horizontal (YouTube, Wallpaper)</MenuItem>
+        <MenuItem value="9:16 (Vertical / Reels)">9:16 — Vertical (Instagram, TikTok)</MenuItem>
+        <MenuItem value="1:1 (Cuadrado / Post)">1:1 — Cuadrado (Post de redes)</MenuItem>
+        <MenuItem value="4:5 (Vertical Corto)">4:5 — Vertical corto (Feed Instagram)</MenuItem>
+      </TextField>
+    </PromptBuilderLayout>
   );
 }
