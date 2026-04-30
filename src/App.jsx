@@ -13,6 +13,7 @@ import Codigo from './pages/Codigo';
 import Video from './pages/Video';
 import Diseno3D from './pages/Diseno3D';
 import MarketingDigital from './pages/MarketingDigital';
+import Musica from './pages/Musica';
 import QueSonLasAI from './pages/QueSonLasAI';
 import TerminosCondiciones from './pages/TerminosCondiciones';
 
@@ -41,6 +42,7 @@ export default function App() {
           <Route path="/video" element={<Video />} />
           <Route path="/diseno-3d" element={<Diseno3D />} />
           <Route path="/marketing-digital" element={<MarketingDigital />} />
+          <Route path="/musica" element={<Musica />} />
           <Route path="/que-son-las-ai" element={<QueSonLasAI />} /> 
           <Route path="/terminos-y-condiciones" element={<TerminosCondiciones />} />
         </Routes>

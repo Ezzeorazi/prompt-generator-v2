@@ -1,7 +1,7 @@
 import React from 'react';
 import { Container, Typography, Box, Grid, Paper } from '@mui/material';
 import { Link } from 'react-router-dom';
-import { Image as ImageIcon, Type, Code, Video, Cuboid, Megaphone, Terminal } from 'lucide-react';
+import { Image as ImageIcon, Type, Code, Video, Cuboid, Megaphone, Music, Terminal } from 'lucide-react';
 
 const HERRAMIENTAS = [
   { titulo: 'Generador de Imágenes', ruta: '/imagen', icono: <ImageIcon size={32} color="#10b981" />, desc: 'Prompts visuales para Midjourney, DALL-E y más.', color: '#10b981' },
@@ -10,6 +10,7 @@ const HERRAMIENTAS = [
   { titulo: 'Producción de Video', ruta: '/video', icono: <Video size={32} color="#f43f5e" />, desc: 'Guiones y cinemáticas para IAs de video.', color: '#f43f5e' },
   { titulo: 'Diseño & Render 3D', ruta: '/diseno-3d', icono: <Cuboid size={32} color="#a855f7" />, desc: 'Materiales, luces y geometría 3D.', color: '#a855f7' },
   { titulo: 'Marketing Digital', ruta: '/marketing-digital', icono: <Megaphone size={32} color="#38bdf8" />, desc: 'Calendarios, posts y estrategias de Ads.', color: '#38bdf8' },
+  { titulo: 'Música con IA', ruta: '/musica', icono: <Music size={32} color="#f97316" />, desc: 'Prompts para Suno: canciones, bases e inspiración musical.', color: '#f97316' },
 ];
 
 export default function Home() {

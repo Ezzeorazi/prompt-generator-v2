@@ -3,7 +3,7 @@ import {
   AppBar, Toolbar, Typography, IconButton, Drawer,
   List, ListItem, ListItemButton, ListItemText, Box, useMediaQuery, useTheme, Button
 } from '@mui/material';
-import { Menu, Image as ImageIcon, Type, Code, Video, Box as BoxIcon, Megaphone, Info, Terminal } from 'lucide-react';
+import { Menu, Image as ImageIcon, Type, Code, Video, Box as BoxIcon, Megaphone, Music, Info, Terminal } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 
 const SECCIONES = [
@@ -12,6 +12,7 @@ const SECCIONES = [
   { label: 'Código', path: '/codigo', icon: <Code size={18} /> },
   { label: 'Video', path: '/video', icon: <Video size={18} /> },
   { label: 'Marketing', path: '/marketing-digital', icon: <Megaphone size={18} /> },
+  { label: 'Música', path: '/musica', icon: <Music size={18} /> },
   { label: '3D', path: '/diseno-3d', icon: <BoxIcon size={18} /> },
   { label: 'Docs (IA)', path: '/que-son-las-ai', icon: <Info size={18} /> },
 ];
